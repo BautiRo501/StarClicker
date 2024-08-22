@@ -132,7 +132,7 @@
     <div id="titulo">Star Clicker: Desafío Cósmico</div>
     <div id="introduccion">
         Bienvenido al desafío más emocionante de la galaxia. Tu misión, si decides aceptarla, es simple pero intensa: 
-        debes demostrar tu velocidad y reflejos al hacer clic en el botón de energía estelar 100 veces en menos de 15 segundos.
+        debes demostrar tu velocidad y reflejos al hacer clic en el botón de energía estelar 100 veces en menos de 17 segundos.
         ¿Tienes lo que se necesita para alcanzar la velocidad de la luz? Prepárate para un viaje a través del espacio 
         donde solo los más rápidos podrán alcanzar la gloria cósmica. ¡Que comiencen los clics estelares!
     </div>
@@ -165,7 +165,7 @@
             const tiempoActual = new Date().getTime();
             const tiempoTranscurrido = (tiempoActual - tiempoInicio) / 1000;
 
-            if (tiempoTranscurrido > 15) {
+            if (tiempoTranscurrido > 17) {
                 perder();
             } else if (contadorClics >= 100) {
                 ganar();
