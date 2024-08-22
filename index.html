@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Clicker: Desafío Cósmico</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('https://www.solarsystemscope.com/textures/download/8k_stars_milky_way.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #titulo {
+            font-size: 64px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 255, 255, 0.5);
+            background: linear-gradient(45deg, #ff0099, #66ff66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: glow 1.5s infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5), 0 0 30px rgba(0, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 0 0 30px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3);
+            }
+        }
+
+        #introduccion {
+            font-size: 24px;
+            text-align: center;
+            margin: 20px;
+            max-width: 800px;
+            line-height: 1.5;
+            z-index: 2;
+        }
+
+        #botonIniciar {
+            padding: 20px 40px;
+            font-size: 24px;
+            border: none;
+            border-radius: 15px;
+            background: radial-gradient(circle at 50% 50%, #00aaff, #005577);
+            color: white;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        #botonIniciar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('https://www.example.com/space-texture.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.5;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #marcador, #botonClick, #mensajePerdiste, #botonReset {
+            display: none; /* Ocultar inicialmente */
+        }
+
+        #marcador {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #botonClick {
+            padding: 20px 40px;
+            font-size: 24px;
+            border: none;
+            border-radius: 10px;
+            background-color: #00aaff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #mensajePerdiste {
+            font-size: 48px;
+            font-weight: bold;
+            color: red;
+            margin-bottom: 20px;
+        }
+
+        #botonReset {
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ff5555;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="titulo">Star Clicker: Desafío Cósmico</div>
+    <div id="introduccion">
+        Bienvenido al desafío más emocionante de la galaxia. Tu misión, si decides aceptarla, es simple pero intensa: 
+        debes demostrar tu velocidad y reflejos al hacer clic en el botón de energía estelar 100 veces en menos de 15 segundos.
+        ¿Tienes lo que se necesita para alcanzar la velocidad de la luz? Prepárate para un viaje a través del espacio 
+        donde solo los más rápidos podrán alcanzar la gloria cósmica. ¡Que comiencen los clics estelares!
+    </div>
+    <button id="botonIniciar" onclick="iniciarJuego()">¡Jugar Ahora!</button>
+
+    <div id="marcador">0</div>
+    <button id="botonClick" style="display: none;">¡Haz clic aquí!</button>
+    <div id="mensajePerdiste" style="display: none;">¡Perdiste!</div>
+    <button id="botonReset" style="display: none;" onclick="resetGame()">Reiniciar</button>
+
+    <script>
+        let contadorClics = 0;
+        let tiempoInicio;
+        const botonIniciar = document.getElementById("botonIniciar");
+        const titulo = document.getElementById("titulo");
+        const introduccion = document.getElementById("introduccion");
+        const botonClick = document.getElementById("botonClick");
+        const marcador = document.getElementById("marcador");
+        const mensajePerdiste = document.getElementById("mensajePerdiste");
+        const botonReset = document.getElementById("botonReset");
+
+        botonClick.addEventListener("click", () => {
+            if (contadorClics === 0) {
+                tiempoInicio = new Date().getTime();
+            }
+
+            contadorClics++;
+            marcador.textContent = contadorClics;
+
+            const tiempoActual = new Date().getTime();
+            const tiempoTranscurrido = (tiempoActual - tiempoInicio) / 1000;
+
+            if (tiempoTranscurrido > 15) {
+                perder();
+            } else if (contadorClics >= 100) {
+                ganar();
+            }
+        });
+
+        function iniciarJuego() {
+            titulo.style.display = "none";
+            introduccion.style.display = "none";
+            botonIniciar.style.display = "none";
+            marcador.style.display = "block";
+            botonClick.style.display = "block"; // Mostrar el botón de clic al iniciar el juego
+            marcador.textContent = "0"; // Reiniciar el marcador al iniciar el juego
+        }
+
+        function perder() {
+            marcador.style.display = "none";
+            botonClick.style.display = "none"; // Ocultar el botón de clic al perder
+            mensajePerdiste.style.display = "block";
+            botonReset.style.display = "block";
+        }
+
+        function ganar() {
+            marcador.textContent = "¡Ganaste!";
+            marcador.style.color = "green";
+            botonClick.style.display = "none"; // Ocultar el botón de clic al ganar
+            botonReset.style.display = "block";
+        }
+
+        function resetGame() {
+            contadorClics = 0;
+            marcador.textContent = contadorClics;
+            marcador.style.color = "white";
+            marcador.style.display = "block";
+            mensajePerdiste.style.display = "none";
+            botonReset.style.display = "none";
+            botonClick.style.display = "block"; // Mostrar el botón de clic al reiniciar el juego
+        }
+    </script>
+</body>
+</html>
