@@ -68,29 +68,27 @@
             transition: transform 0.3s ease;
         }
 
-        #botonIniciar::before {
-            content: '';
+        .nave {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: url('https://www.example.com/space-texture.png') no-repeat center center;
-            background-size: cover;
-            opacity: 0.5;
-            animation: rotate 10s linear infinite;
+            width: 100px;
+            height: 100px;
+            animation: flotar 6s ease-in-out infinite;
+            z-index: 1;
         }
 
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
+        @keyframes flotar {
+            0% {
+                transform: translateY(0px);
             }
-            to {
-                transform: rotate(360deg);
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
             }
         }
 
-        #marcador, #botonClick, #mensajePerdiste, #botonReset {
+        #marcador, #botonClick, #mensajePerdiste, #botonReset, #contadorSegundos {
             display: none; /* Ocultar inicialmente */
         }
 
@@ -117,6 +115,13 @@
             margin-bottom: 20px;
         }
 
+        #mensajeGanaste {
+            font-size: 48px;
+            font-weight: bold;
+            color: green;
+            margin-bottom: 20px;
+        }
+
         #botonReset {
             padding: 10px 20px;
             font-size: 24px;
@@ -126,9 +131,26 @@
             color: white;
             cursor: pointer;
         }
+
+        #contadorSegundos {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00BFFF; /* Color celeste */
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+    <!-- Naves Espaciales flotantes -->
+    <img src="navesespaciales.png" class="nave" style="top: 10%; left: 15%;">
+    <img src="navesespaciales.png" class="nave" style="top: 30%; left: 70%;">
+    <img src="navesespaciales.png" class="nave" style="top: 50%; left: 30%;">
+    <img src="navesespaciales.png" class="nave" style="top: 70%; left: 50%;">
+    <img src="navesespaciales.png" class="nave" style="top: 80%; left: 80%;">
+
     <div id="titulo">Star Clicker: Desafío Cósmico</div>
     <div id="introduccion">
         Bienvenido al desafío más emocionante de la galaxia. Tu misión, si decides aceptarla, es simple pero intensa: 
@@ -141,22 +163,31 @@
     <div id="marcador">0</div>
     <button id="botonClick" style="display: none;">¡Haz clic aquí!</button>
     <div id="mensajePerdiste" style="display: none;">¡Perdiste!</div>
+    <div id="mensajeGanaste" style="display: none;">¡Ganaste!</div>
     <button id="botonReset" style="display: none;" onclick="resetGame()">Reiniciar</button>
+
+    <div id="contadorSegundos">0s</div> <!-- Contador de segundos -->
 
     <script>
         let contadorClics = 0;
         let tiempoInicio;
+        let tiempoIntervalo;
+        let segundos = 0;
         const botonIniciar = document.getElementById("botonIniciar");
         const titulo = document.getElementById("titulo");
         const introduccion = document.getElementById("introduccion");
         const botonClick = document.getElementById("botonClick");
         const marcador = document.getElementById("marcador");
         const mensajePerdiste = document.getElementById("mensajePerdiste");
+        const mensajeGanaste = document.getElementById("mensajeGanaste");
         const botonReset = document.getElementById("botonReset");
+        const contadorSegundos = document.getElementById("contadorSegundos");
+        const naves = document.querySelectorAll('.nave');
 
         botonClick.addEventListener("click", () => {
             if (contadorClics === 0) {
                 tiempoInicio = new Date().getTime();
+                iniciarContador();
             }
 
             contadorClics++;
@@ -176,33 +207,51 @@
             titulo.style.display = "none";
             introduccion.style.display = "none";
             botonIniciar.style.display = "none";
+            naves.forEach(nave => nave.style.display = "none"); // Ocultar naves al iniciar el juego
             marcador.style.display = "block";
             botonClick.style.display = "block"; // Mostrar el botón de clic al iniciar el juego
             marcador.textContent = "0"; // Reiniciar el marcador al iniciar el juego
+            contadorSegundos.style.display = "block"; // Mostrar el contador de segundos al iniciar el juego
+            contadorSegundos.textContent = "0s"; // Reiniciar el contador de segundos
+        }
+
+        function iniciarContador() {
+            tiempoIntervalo = setInterval(() => {
+                segundos++;
+                contadorSegundos.textContent = `${segundos}s`;
+            }, 1000);
         }
 
         function perder() {
+            clearInterval(tiempoIntervalo);
             marcador.style.display = "none";
-            botonClick.style.display = "none"; // Ocultar el botón de clic al perder
+            botonClick.style.display = "none";
             mensajePerdiste.style.display = "block";
             botonReset.style.display = "block";
+            contadorSegundos.style.display = "none"; // Ocultar el contador de segundos al perder
         }
 
         function ganar() {
-            marcador.textContent = "¡Ganaste!";
-            marcador.style.color = "green";
-            botonClick.style.display = "none"; // Ocultar el botón de clic al ganar
+            clearInterval(tiempoIntervalo);
+            marcador.style.display = "none";
+            botonClick.style.display = "none";
+            mensajeGanaste.style.display = "block";
             botonReset.style.display = "block";
+            contadorSegundos.style.display = "none"; // Ocultar el contador de segundos al ganar
         }
 
         function resetGame() {
             contadorClics = 0;
+            segundos = 0;
             marcador.textContent = contadorClics;
-            marcador.style.color = "white";
             marcador.style.display = "block";
             mensajePerdiste.style.display = "none";
+            mensajeGanaste.style.display = "none";
             botonReset.style.display = "none";
             botonClick.style.display = "block"; // Mostrar el botón de clic al reiniciar el juego
+            contadorSegundos.style.display = "block"; // Mostrar el contador de segundos al reiniciar el juego
+            contadorSegundos.textContent = "0s"; // Reiniciar el contador de segundos
+            naves.forEach(nave => nave.style.display = "none"); // Ocultar naves al reiniciar
         }
     </script>
 </body>
