@@ -218,6 +218,15 @@
                 segundos++;
                 contadorSegundos.textContent = `${segundos}s`;
 
+                // Cambiar color del contador según el tiempo
+                if (segundos >= 15) {
+                    contadorSegundos.style.color = "red";
+                } else if (segundos >= 10) {
+                    contadorSegundos.style.color = "yellow";
+                } else {
+                    contadorSegundos.style.color = "#00BFFF"; // Color celeste
+                }
+
                 if (segundos >= 17) { // Si llega a 17 segundos, perderás automáticamente
                     perder();
                 }
