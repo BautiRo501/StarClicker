@@ -196,9 +196,7 @@
             const tiempoActual = new Date().getTime();
             const tiempoTranscurrido = (tiempoActual - tiempoInicio) / 1000;
 
-            if (tiempoTranscurrido > 17) {
-                perder();
-            } else if (contadorClics >= 100) {
+            if (contadorClics >= 100 && tiempoTranscurrido <= 17) {
                 ganar();
             }
         });
@@ -219,6 +217,10 @@
             tiempoIntervalo = setInterval(() => {
                 segundos++;
                 contadorSegundos.textContent = `${segundos}s`;
+
+                if (segundos >= 17) { // Si llega a 17 segundos, perderás automáticamente
+                    perder();
+                }
             }, 1000);
         }
 
